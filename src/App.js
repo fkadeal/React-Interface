@@ -26,7 +26,13 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
                 {
                   AppointmentList.map(appointment =>(
                   <AppointmentListInfro 
-                  key={appointment.id} appointment={appointment} />))
+                    key={appointment.id} 
+                    appointment={appointment}
+                    onDeleteAppointment={
+                      appointmentID => setAppointmentList(AppointmentList.filter(apointment => apointment.id != appointmentID)) }
+                     />
+                     )
+                     )
                 }
        </ul>
     </div>
