@@ -7,7 +7,15 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
 
   function App() {
     let [AppointmentList , setAppointmentList] = useState([]);
-
+    let [query ,setQuery] = useState("");
+    const filterdAppointments = AppointmentList.filter(
+      item => {
+      return(
+          item.petName.toLowerCase().includes(query.toLowerCase()) ||
+          item.ownerName.toLowerCase().includes(query.toLowerCase()) ||
+          item.aptNotes.toLowerCase().includes(query.toLowerCase()) 
+        );
+    })
     const fetchData = useCallback(() =>{
       fetch('./data.json').then(response => response.json()).then(data => {setAppointmentList(data)})
     },[])
@@ -21,10 +29,14 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
 
        <BiArchive className="inline-block text-red-400"/>your first Appointment</h1>
        <AddAppointment />
-       <Search />
+       <Search query={query}
+       onChangeQuery={myQuery => {
+         setQuery(myQuery)
+       }}
+       />
        <ul className="divide-y divide-gray-200">
                 {
-                  AppointmentList.map(appointment =>(
+                  filterdAppointments.map(appointment =>(
                   <AppointmentListInfro 
                     key={appointment.id} 
                     appointment={appointment}
