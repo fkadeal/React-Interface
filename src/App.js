@@ -8,6 +8,8 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
   function App() {
     let [AppointmentList , setAppointmentList] = useState([]);
     let [query ,setQuery] = useState("");
+    let [sortBy, setsortBy] = useState("petName");
+    let [orderBy, setorderBy] = useState("asc");
     const filterdAppointments = AppointmentList.filter(
       item => {
       return(
@@ -15,6 +17,11 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
           item.ownerName.toLowerCase().includes(query.toLowerCase()) ||
           item.aptNotes.toLowerCase().includes(query.toLowerCase()) 
         );
+    }).sort((a,b) => {
+      let order = (orderBy === 'asc') ? 1 : -1;
+      return (
+        a[sortBy].toLowerCase() > b[sortBy].toLowerCase() ? -1 * order : 1 * order
+      )
     })
     const fetchData = useCallback(() =>{
       fetch('./data.json').then(response => response.json()).then(data => {setAppointmentList(data)})
