@@ -1,11 +1,11 @@
 import { useCallback ,useState ,useEffect } from "react";
-import {BiTrash,   BiArchive } from "react-icons/bi";
+import {BiArchive } from "react-icons/bi";
 import Search from "./components/Search";
 import AddAppointment from "./components/AddAppointment";
 // import AppointmentList from "./data.json";
 import AppointmentListInfro from "./components/AppointmentListInfo";
 
-  function App() {
+  function App({onsortBy}) {
     let [AppointmentList , setAppointmentList] = useState([]);
     let [query ,setQuery] = useState("");
     let [sortBy, setsortBy] = useState("petName");
@@ -23,6 +23,8 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
         a[sortBy].toLowerCase() > b[sortBy].toLowerCase() ? -1 * order : 1 * order
       )
     })
+
+
     const fetchData = useCallback(() =>{
       fetch('./data.json').then(response => response.json()).then(data => {setAppointmentList(data)})
     },[])
@@ -35,11 +37,17 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
      <h1 className="text-5xl mb-5">
 
        <BiArchive className="inline-block text-red-400"/>your first Appointment</h1>
-       <AddAppointment />
+       <AddAppointment onSendAppointment={newAppointment => setAppointmentList([...AppointmentList, newAppointment])} 
+       lastId={AppointmentList.reduce((max,item) => Number(item.id) > max ? Number(item.id) : max, 0)}/>
        <Search query={query}
        onChangeQuery={myQuery => {
          setQuery(myQuery)
        }}
+
+       orderBy={orderBy}
+        onOrderByChange={mySort => setorderBy(mySort)}
+       sortBy={sortBy}
+       sortByChange={mySort => setsortBy(mySort)}
        />
        <ul className="divide-y divide-gray-200">
                 {
@@ -48,7 +56,7 @@ import AppointmentListInfro from "./components/AppointmentListInfo";
                     key={appointment.id} 
                     appointment={appointment}
                     onDeleteAppointment={
-                      appointmentID => setAppointmentList(AppointmentList.filter(apointment => apointment.id != appointmentID)) }
+                      appointmentID => setAppointmentList(AppointmentList.filter(apointment => apointment.id !== appointmentID)) }
                      />
                      )
                      )
